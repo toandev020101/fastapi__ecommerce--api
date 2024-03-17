@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  #fastapi_ecommerce:
+    #build:
+      #context: .
+      #dockerfile: Dockerfile
+    #ports:
+     # - '8000:8000'
+    #depends_on:
+      #- pg_sql
+
+  pg_sql:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=fastapi_ecommerce
+    ports:
+      - '5432:5432'
