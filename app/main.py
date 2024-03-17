@@ -1,8 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.core import get_settings, db
 from app.apis import auth_router
+from app.middlewares import logging_middleware
 
 settings = get_settings()
 
@@ -15,6 +17,8 @@ def init_app():
         description=settings.APP_DESCRIPTION,
         version=settings.APP_VERSION
     )
+
+    app.add_middleware(BaseHTTPMiddleware, dispatch=logging_middleware)
 
     @app.on_event("startup")
     async def startup():
