@@ -35,7 +35,7 @@ async def refresh_token(request: Request, response: Response):
                           )
 
 
-@router.get("/logout", response_model=ResponseSchema, response_model_exclude_none=True)
+@router.get("/logout", response_model=ResponseSchema)
 async def logout(response: Response, user_decode: HTTPAuthorizationCredentials = Security(JWTBearer())):
     await AuthService.logout(response=response, user_decode=user_decode)
     return ResponseSchema(status_code=status.HTTP_200_OK, detail="Đăng xuất thành công")

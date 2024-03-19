@@ -63,7 +63,6 @@ class AuthService:
 
         try:
             user_decode = JWTRepo.decode_token(token=token)
-            print(user_decode)
             user = await UserRepository.find_one_by_id(id=int(user_decode['user_id']))
             if not user or user.token_version != user_decode['token_version']:
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token không hợp lệ!")
@@ -87,3 +86,12 @@ class AuthService:
         await UserRepository.update_token_version(id=user.id, token_version=user.token_version + 1)
         JWTRepo.clear_refresh_token(response=response)
 
+    @staticmethod
+    async def check_permission(user_id: int):
+        # check user
+        user = await UserRepository.find_one_by_id(id=user_id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Người dùng không tồn tại!")
+
+        return user.is_admin

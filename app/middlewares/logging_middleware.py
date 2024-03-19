@@ -20,7 +20,7 @@ async def logging_middleware(request: Request, call_next):
         'method': request.method,
         'headers': headers,
         'cookies': request.cookies,
-        'body': json.loads(request_body)
+        'body': json.loads(request_body) if request_body else None
     }
     logger.info(request_log_dict)
 
@@ -29,18 +29,24 @@ async def logging_middleware(request: Request, call_next):
 
     response_body = [section async for section in response.body_iterator]
     response.body_iterator = iterate_in_threadpool(iter(response_body))
-    response_body = json.loads(response_body[0].decode())
+    try:
+        response_body = json.loads(response_body[0].decode())
+    except Exception as e:
+        response_body = None
 
     process_time = time.time() - start
 
     # write log for response
     response_log_dict = {
         'type': 'response',
-        'status_code': response_body.get('status_code'),
-        'detail': response_body.get('detail'),
-        'result': response_body.get('result'),
         'process_time': process_time
     }
+
+    if response_body:
+        response_log_dict['status_code'] = response_body.get('status_code')
+        response_log_dict['detail'] = response_body.get('detail')
+        response_log_dict['result'] = response_body.get('result')
+
     logger.info(response_log_dict)
 
     return response

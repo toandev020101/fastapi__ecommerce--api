@@ -1,13 +1,14 @@
 from typing import Optional
 from datetime import timedelta, datetime
 
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt
-from fastapi import Request, Response, status, HTTPException
 from passlib.context import CryptContext
 
-from app.core import get_settings
+from fastapi import Request, Response, status, HTTPException
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 from app.models import User
+from app.core import get_settings
 
 settings = get_settings()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -118,8 +119,8 @@ class JWTBearer(HTTPBearer):
     def verify_jwt(token: str):
         # Verify the JWT token
         try:
-            JWTRepo.decode_token(token=token)
-            return True
+            user_decode = JWTRepo.decode_token(token=token)
+            return True if user_decode else False
         except jwt.ExpiredSignatureError:
             # Handle expired token
             return False

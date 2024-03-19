@@ -8,7 +8,7 @@ from app.core import Base
 class BaseModel(Base):
     __abstract__ = True
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=func.now(), server_default=func.now(), nullable=False)
     modified_at = Column(DateTime, default=func.now(), onupdate=func.now(), server_default=func.now(),
                          server_onupdate=func.now(),

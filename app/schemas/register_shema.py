@@ -1,16 +1,16 @@
 import re
 from typing import TypeVar
 
-from pydantic import BaseModel, EmailStr, constr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator
 
 T = TypeVar('T')
 
 
 class RegisterSchema(BaseModel):
-    full_name: constr(strip_whitespace=True, min_length=4)
-    username: constr(strip_whitespace=True, min_length=4)
-    password: constr(strip_whitespace=True, min_length=6)
-    email: str
+    full_name: str
+    username: str
+    password: str
+    email: EmailStr
 
     @field_validator('email')
     def email_validation(cls, v):

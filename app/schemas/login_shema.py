@@ -2,8 +2,8 @@ from pydantic import BaseModel, constr, field_validator
 
 
 class LoginSchema(BaseModel):
-    username: constr(strip_whitespace=True, min_length=4)
-    password: constr(strip_whitespace=True, min_length=6)
+    username: str
+    password: str
 
     @field_validator('username', 'password')
     def min_length_validation(cls, v):
