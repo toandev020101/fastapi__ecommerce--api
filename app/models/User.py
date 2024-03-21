@@ -13,5 +13,7 @@ class User(BaseModel):
     email = Column(String(150), nullable=True)
     is_admin = Column(Boolean, default=False, server_default="false", nullable=False)
     token_version = Column(Integer, default=0, server_default="0", nullable=False)
+    is_active = Column(Boolean, default=True, server_default="true", nullable=False)
 
-    products = relationship("Product", back_populates="creator")
+    products = relationship("Product", back_populates="creator", lazy="selectin")
+    orders = relationship("Order", back_populates="buyer", lazy="selectin")

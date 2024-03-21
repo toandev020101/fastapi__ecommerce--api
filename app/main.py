@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.core import get_settings, db
-from app.apis import auth_router, product_router
+from app.apis import auth_router, product_router, order_router
 from app.middlewares import logging_middleware
 
 settings = get_settings()
@@ -30,6 +30,7 @@ def init_app():
 
     app.include_router(auth_router)
     app.include_router(product_router)
+    app.include_router(order_router)
 
     return app
 
