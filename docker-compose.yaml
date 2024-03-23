@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  #fastapi_ecommerce:
-    #build:
-      #context: .
-      #dockerfile: Dockerfile
-    #ports:
-     # - '8000:8000'
-    #depends_on:
-      #- pg_sql
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    depends_on:
+      - pg_sql
 
   pg_sql:
     image: postgres:14.1-alpine
