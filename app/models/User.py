@@ -17,3 +17,4 @@ class User(BaseModel):
 
     products = relationship("Product", back_populates="creator", lazy="selectin")
     orders = relationship("Order", back_populates="buyer", lazy="selectin")
+    payments = relationship("Payment", back_populates="user", lazy="selectin")

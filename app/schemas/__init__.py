@@ -5,3 +5,4 @@ from app.schemas.register_shema import RegisterSchema
 from app.schemas.product_schema import ProductSchema
 from app.schemas.remove_schema import RemoveSchema
 from app.schemas.response_shema import ResponseSchema
+from app.schemas.payment_schema import ProcessPaymentSchema

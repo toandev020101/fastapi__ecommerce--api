@@ -32,7 +32,7 @@ class AuthService:
 
         # send refresh token
         JWTRepo.send_refresh_token(response=response, user=created_user)
-        return {"data": created_user.to_dict(), "access_token": access_token}
+        return {"data": created_user.to_dict(un_selects=["password"]), "access_token": access_token}
 
     @staticmethod
     async def login(schema: LoginSchema, response: Response):
@@ -53,7 +53,7 @@ class AuthService:
         # send refresh token
         JWTRepo.send_refresh_token(response=response, user=user)
 
-        return {"data": user.to_dict(), "access_token": access_token}
+        return {"data": user.to_dict(un_selects=["password"]), "access_token": access_token}
 
     @staticmethod
     async def refresh_token(request: Request, response: Response):

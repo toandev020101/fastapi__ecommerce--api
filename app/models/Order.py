@@ -7,6 +7,7 @@ from app.models import BaseModel
 
 
 class OrderStatus(PythonEnum):
+    UNPAID = "Chờ thanh toán"
     PENDING = "Chờ lấy hàng"
     SHIPPING = "Đang vận chuyển"
     COMPLETED = "Đã hoàn thành"
@@ -27,10 +28,11 @@ class Order(BaseModel):
 
     status = Column(Enum(*status_values, name='order_status'), default=OrderStatus.PENDING.value,
                     server_default=OrderStatus.PENDING.value, nullable=False)
-    is_paid = Column(Boolean, default=False, server_default="false", nullable=False)
     is_active = Column(Boolean, default=True, server_default="true", nullable=False)
 
     order_items = relationship("OrderItem", back_populates="order", lazy="selectin")
 
     buyer_id = Column(Integer, ForeignKey('users.id'))
     buyer = relationship("User", back_populates="orders", lazy="selectin")
+
+    payment = relationship("Payment", back_populates="order", lazy="selectin", uselist=False)

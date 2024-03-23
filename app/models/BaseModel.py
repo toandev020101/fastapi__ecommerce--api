@@ -1,6 +1,7 @@
-from sqlalchemy.sql import func
+from typing import List, Dict
+
 from sqlalchemy import Column, Integer, DateTime
-from pydantic import BaseModel as PydanticBaseModel
+from sqlalchemy.sql import func
 
 from app.core import Base
 
@@ -15,31 +16,36 @@ class BaseModel(Base):
                          nullable=False)
 
     @staticmethod
-    def extra_relationships(model):
+    def extra_relationships(model_name: str, model, relationship_un_selects: Dict[str, List[str]]):
         result = {}
-        for item in model.__table__.columns:
-            if item.name != "password":
-                result[item.name] = getattr(model, item.name)
+        for column in model.__table__.columns:
+            if (not relationship_un_selects or model_name not in relationship_un_selects or column.name
+                    not in relationship_un_selects[model_name]):
+                result[column.name] = getattr(model, column.name)
         return result
 
-    def to_dict(self, relationships=None):
-        columns = self.__mapper__.columns
-
+    def to_dict(self, un_selects: List[str] = None, relationship_un_selects=None,
+                relationships: List[str] = None):
         result = {}
-        # Lấy giá trị của các cột
-        for column in columns:
-            if column.key != "password":
-                result[column.key] = getattr(self, column.key)
+        # Get the values of the columns
+        for column in self.__table__.columns:
+            if not un_selects or column.name not in un_selects:
+                result[column.name] = getattr(self, column.name)
 
-        # Lấy giá trị của các relationship nếu được chỉ định
+        # Take the value of relationships if appointed
         if relationships:
             for relationship_name in relationships:
                 if hasattr(self, relationship_name):
                     value = getattr(self, relationship_name)
                     if value is not None:
                         if isinstance(value, list):
-                            result[relationship_name] = [self.extra_relationships(item) for item in value]
+                            result[relationship_name] = [
+                                self.extra_relationships(model_name=relationship_name, model=item,
+                                                         relationship_un_selects=relationship_un_selects) for item in
+                                value]
                         else:
-                            result[relationship_name] = self.extra_relationships(value)
+                            result[relationship_name] = self.extra_relationships(model_name=relationship_name,
+                                                                                 model=value,
+                                                                                 relationship_un_selects=relationship_un_selects)
 
         return result
