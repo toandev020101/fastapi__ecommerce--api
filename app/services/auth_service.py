@@ -85,13 +85,3 @@ class AuthService:
 
         await UserRepository.update_token_version(id=user.id, token_version=user.token_version + 1)
         JWTRepo.clear_refresh_token(response=response)
-
-    @staticmethod
-    async def check_permission(user_id: int):
-        # check user
-        user = await UserRepository.find_one_by_id(id=user_id)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Người dùng không tồn tại!")
-
-        return user.is_admin

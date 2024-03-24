@@ -126,7 +126,7 @@ class OrderService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail="Không tìm thấy đơn hàng!")
 
-        if order.status == schema.status.value:
+        if order.status == schema.status:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="Trạng thái đơn hàng không hợp lệ!")
 
@@ -157,7 +157,7 @@ class OrderService:
             try:
                 # change payment status
                 new_payment_status = PaymentStatus.FAILURE.value
-                if order.payment.payment_method.value != PaymentMethod.PAYMENT_ON_DELIVERY.value:
+                if order.payment.payment_method != PaymentMethod.PAYMENT_ON_DELIVERY.value:
                     new_payment_status = PaymentStatus.REFUND.value
 
                 await PaymentRepository.change_status(id=order.payment.id, status=new_payment_status,
@@ -188,7 +188,7 @@ class OrderService:
             if order.status != OrderStatus.CANCELLED.value and order.status != OrderStatus.COMPLETED.value:
                 # change payment status
                 new_payment_status = PaymentStatus.PENDING.value
-                if order.payment.payment_method.value != PaymentMethod.PAYMENT_ON_DELIVERY.value:
+                if order.payment.payment_method != PaymentMethod.PAYMENT_ON_DELIVERY.value:
                     new_payment_status = PaymentStatus.REFUND.value
 
                 await PaymentRepository.change_status(id=order.payment.id, status=new_payment_status,
@@ -220,7 +220,7 @@ class OrderService:
                 if order.status != OrderStatus.CANCELLED.value and order.status != OrderStatus.COMPLETED.value:
                     # change payment status
                     new_payment_status = PaymentStatus.PENDING.value
-                    if order.payment.payment_method.value != PaymentMethod.PAYMENT_ON_DELIVERY.value:
+                    if order.payment.payment_method != PaymentMethod.PAYMENT_ON_DELIVERY.value:
                         new_payment_status = PaymentStatus.REFUND.value
 
                     await PaymentRepository.change_status(id=order.payment.id, status=new_payment_status,

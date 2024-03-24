@@ -1,14 +1,40 @@
 version: '3.8'
 
 services:
+  opa:
+    image: openpolicyagent/opa:0.62.1
+    restart: always
+    ports:
+      - "8181:8181"
+    command:
+      - "run"
+      - "--server"
+      - "--log-format=json-pretty"
+      - "--set=decision_logs.console=true"
+      - "--set=services.nginx.url=http://bundle_server"
+      - "--set=bundles.nginx.service=nginx"
+      - "--set=bundles.nginx.resource=bundles/bundle.tar.gz"
+    depends_on:
+      - bundle_server
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
     ports:
       - '8000:8000'
     depends_on:
+      - opa
       - pg_sql
+
+  bundle_server:
+    image: nginx:1.20.0-alpine
+    restart: always
+    ports:
+      - "8888:80"
+    volumes:
+      - ./app/opa:/usr/share/nginx/html/bundles
 
   pg_sql:
     image: postgres:14.1-alpine

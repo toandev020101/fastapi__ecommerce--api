@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_HOURS: int = os.environ.get("REFRESH_TOKEN_EXPIRE_HOURS", "5")
     REFRESH_TOKEN_COOKIE_NAME: str = os.environ.get("REFRESH_TOKEN_COOKIE_NAME", "fastapi_cookie")
 
+    # OPA
+    OPA_URL: str = os.environ.get("OPA_URL", "http://localhost:8181/v1/data/authorization")
+
 
 @lru_cache()
 def get_settings() -> Settings:
