@@ -56,6 +56,13 @@ class ProductService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail="Không tìm thấy sản phẩm!")
 
+        # check name
+        if schema.name != product.name:
+            product = await ProductRepository.find_one_by_name(name=schema.name)
+            if product:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                    detail="Tên sản phẩm đã tồn tại!")
+
         new_product = product
         new_product.name = schema.name
         new_product.description = schema.description
